@@ -3,6 +3,7 @@ import json
 import requests
 from senec import Senec
 import configparser
+from datetime import datetime
 
 # Read the configuration file
 config = configparser.ConfigParser()
@@ -46,7 +47,10 @@ while True:
 
         # Send the JSON payload to the API endpoint
         response = requests.post(endpoint, json=payload)
-        print(response.text)
+
+        # Print the response with timestamp
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(f"{current_time} - {response.text}")
     except Exception as e:
         print(e)
 
