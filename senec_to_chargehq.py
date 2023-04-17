@@ -19,19 +19,23 @@ while True:
         
         # Extract the values and change the units to kW
         production_kw = data["ENERGY"]['GUI_INVERTER_POWER']/1000
-        battery_discharge_kw = data["ENERGY"]['GUI_BAT_DATA_POWER'] / (-1000)
-        consumption_kw = data["ENERGY"]['GUI_HOUSE_POW']/1000
         net_import_kw = data["ENERGY"]['GUI_GRID_POW']/1000
+        consumption_kw = data["ENERGY"]['GUI_HOUSE_POW']/1000
+        imported_kwh = data["STATISTIC"]['LIVE_GRID_IMPORT']
+        exported_kwh = data["STATISTIC"]['LIVE_GRID_EXPORT']        
+        battery_discharge_kw = data["ENERGY"]['GUI_BAT_DATA_POWER'] / (-1000)
         battery_soc = data["ENERGY"]['GUI_BAT_DATA_FUEL_CHARGE'] / 100
 
         # Create the JSON payload
         payload = {
-            "apiKey": "{REPLACE WITH YOUR OWN API}",
+            "apiKey": "{REPLACE WITH YOUR API KEY}",
             "siteMeters": {
                 "production_kw": production_kw,
-                "battery_discharge_kw": battery_discharge_kw,
-                "consumption_kw": consumption_kw,
                 "net_import_kw": net_import_kw,
+                "consumption_kw": consumption_kw,
+                "imported_kwh": imported_kwh,
+                "exported_kwh": exported_kwh,
+                "battery_discharge_kw": battery_discharge_kw,
                 "battery_soc": battery_soc
             }
         }
