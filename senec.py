@@ -1,3 +1,5 @@
+# This code is based on the Gist by smashnet at https://gist.github.com/smashnet/82ad0b9d7f0ba2e5098e6649ba08f88a
+
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
