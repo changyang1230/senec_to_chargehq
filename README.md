@@ -4,3 +4,5 @@ Script run on local network with SENEC.Home V3 installed (apparently should also
 You would need to run this on a standalone server e.g. a Raspberry Pi. 
 
 senec.py based on https://gist.github.com/smashnet/82ad0b9d7f0ba2e5098e6649ba08f88a
+
+More info about Charge HQ Push API at https://chargehq.net/kb/push-api
