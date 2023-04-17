@@ -1,16 +1,20 @@
-"""
-PLEASE replace the SENEC IP and your API in this file.
-"""
-
 import time
 import json
 import requests
 from senec import Senec
+import configparser
 
-#init api
-api = Senec("{REPLACE WITH SENEC IP}")
+# Read the configuration file
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+# Initialize the Senec API object and the JSON payload
+api = Senec(config['DEFAULT']['senec_ip'])
 if not api:
-  sys.exit
+    sys.exit()
+
+# Initialize the Charge HQ API endpoint
+endpoint = "https://api.chargehq.net/api/public/push-solar-data"
 
 while True:
     try:
@@ -28,7 +32,7 @@ while True:
 
         # Create the JSON payload
         payload = {
-            "apiKey": "{REPLACE WITH YOUR API KEY}",
+            "apiKey": config['DEFAULT']['api_key'],
             "siteMeters": {
                 "production_kw": production_kw,
                 "net_import_kw": net_import_kw,
@@ -41,13 +45,10 @@ while True:
         }
 
         # Send the JSON payload to the API endpoint
-        response = requests.post("https://api.chargehq.net/api/public/push-solar-data", json=payload)
+        response = requests.post(endpoint, json=payload)
         print(response.text)
     except Exception as e:
         print(e)
 
-    # Wait for 30 seconds before repeating (Charge HQ API limit)
+    # Wait for 30 seconds before repeating
     time.sleep(30)
-
-# Close the driver
-driver.quit()
