@@ -1,4 +1,7 @@
 # Integrate SENEC Hybrid Home Battery with Charge HQ
+
+# Note: this script is currently non-functional as of 31/08/23 due to modification of network settings on SENEC firmware. I don't have the coding prowess to troubleshoot this, but will keep my eyes out for fixes and implement it as soon as able. 
+
 Script run on local network with SENEC.Home V3 installed (apparently should also work on most other Senec system but I am not 100%). The output is a JSON payload to be pushed to Charge HQ API to enable solar-aware EV charging using only excess solar power. 
 
 The only changes necessary is to alter the local IP address of the SENEC battery (should be printed on the LCD display of the battery) in config.ini, and to insert the API key which is obtained via Charge HQ (see instruction in link below)
