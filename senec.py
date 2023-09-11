@@ -1,5 +1,3 @@
-# This code is based on the Gist by smashnet at https://gist.github.com/smashnet/82ad0b9d7f0ba2e5098e6649ba08f88a
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -11,16 +9,19 @@ Tested with: SENEC.Home V3 hybrid duo
 Kudos:
 * SYSTEM_STATE_NAME taken from https://github.com/mchwalisz/pysenec
 """
-from numpy import empty
+
 import requests
 import struct
 import logging
+import json
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 __author__ = "Nicolas Inden"
-__copyright__ = "Copyright 2022, Nicolas Inden"
+__copyright__ = "Copyright 2023, Nicolas Inden"
 __credits__ = ["Nicolas Inden", "Mikołaj Chwalisz"]
 __license__ = "Apache-2.0 License"
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 __maintainer__ = "Nicolas Inden"
 __email__ = "nico@smashnet.de"
 __status__ = "Production"
@@ -32,15 +33,15 @@ class Senec():
 
     def __init__(self, device_ip):
         self.device_ip = device_ip
-        self.read_api  = f"http://{device_ip}/lala.cgi"
+        self.read_api  = f"https://{device_ip}/lala.cgi"
 
     def get_values(self, request_json = {}):
         if not request_json: request_json = BASIC_REQUEST
         try:
-            response = requests.post(self.read_api, json=request_json)
+            response = requests.post(self.read_api, json=request_json, verify=False)
             if response.status_code == 200:
-                res = self.__decode_data(response.json())
-                return self.__substitute_system_state(res)
+                return self.__decode_data(response.json())
+                #return self.__substitute_system_state(res)
             else:
                 log.warning(f"Status code {response.status_code}")
                 return {"error": f"Status code {response.status_code}"}
@@ -88,7 +89,10 @@ class Senec():
         return value
 
     def __substitute_system_state(self, data):
+        #currently unused
         system_state = data['STATISTIC']['CURRENT_STATE']
+        if system_state == "VARIABLE_NOT_FOUND":
+            return data
         try:
             data['STATISTIC']['CURRENT_STATE'] = SYSTEM_STATE_NAME[system_state]
         except KeyError as e:
@@ -98,16 +102,16 @@ class Senec():
             return data
 
 BASIC_REQUEST = {
-    'STATISTIC': {
-        'CURRENT_STATE': '',                # Current state of the system (int, see SYSTEM_STATE_NAME)
-        'LIVE_BAT_CHARGE_MASTER': '',       # Battery charge amount since installation (kWh)
-        'LIVE_BAT_DISCHARGE_MASTER': '',    # Battery discharge amount since installation (kWh)
-        'LIVE_GRID_EXPORT': '',             # Grid export amount since installation (kWh)
-        'LIVE_GRID_IMPORT': '',             # Grid import amount since installation (kWh)
-        'LIVE_HOUSE_CONS': '',              # House consumption since installation (kWh)
-        'LIVE_PV_GEN': '',                  # PV generated power since installation (kWh)
-        'MEASURE_TIME': ''                  # Unix timestamp for above values (ms)
-    },
+    #'STATISTIC': {
+    #    'CURRENT_STATE': '',                # Current state of the system (int, see SYSTEM_STATE_NAME)
+    #    'LIVE_BAT_CHARGE_MASTER': '',       # Battery charge amount since installation (kWh)
+    #    'LIVE_BAT_DISCHARGE_MASTER': '',    # Battery discharge amount since installation (kWh)
+    #    'LIVE_GRID_EXPORT': '',             # Grid export amount since installation (kWh)
+    #    'LIVE_GRID_IMPORT': '',             # Grid import amount since installation (kWh)
+    #    'LIVE_HOUSE_CONS': '',              # House consumption since installation (kWh)
+    #    'LIVE_PV_GEN': '',                  # PV generated power since installation (kWh)
+    #    'MEASURE_TIME': ''                  # Unix timestamp for above values (ms)
+    #},
     'ENERGY': {
         'GUI_BAT_DATA_CURRENT': '',         # Battery charge current: negative if discharging, positiv if charging (A)
         'GUI_BAT_DATA_FUEL_CHARGE': '',     # Remaining battery (percent)
